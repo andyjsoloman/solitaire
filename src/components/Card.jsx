@@ -1,5 +1,6 @@
 // src/components/Card.jsx
 import styled from "styled-components";
+import { useDrag } from "react-dnd";
 
 const CardWrapper = styled.div.attrs({})`
   width: 80px;
@@ -19,6 +20,7 @@ const CardWrapper = styled.div.attrs({})`
   margin-top: ${({ $index }) =>
     $index > 0 ? `-100px` : "0px"}; /* Slight overlap using negative margin */
   z-index: ${({ $index }) => $index + 1}; /* Ensure the top card stays on top */
+  cursor: ${({ $isDraggable }) => ($isDraggable ? "grab" : "default")};
 `;
 
 const FaceDownOverlay = styled.div`
@@ -43,9 +45,25 @@ function getSuitSymbol(suit) {
   }
 }
 
-function Card({ rank, suit, faceUp, index }) {
+function Card({ rank, suit, faceUp, index, id, sourceCol }) {
+  const [{ isDragging }, dragRef] = useDrag({
+    type: "CARD",
+    item: { id, rank, suit, index, sourceCol },
+    canDrag: faceUp,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
   return (
-    <CardWrapper $suit={suit} $faceUp={faceUp} $index={index}>
+    <CardWrapper
+      ref={dragRef}
+      $suit={suit}
+      $faceUp={faceUp}
+      $index={index}
+      $isDraggable={faceUp}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
       {faceUp ? `${rank}${getSuitSymbol(suit)}` : <FaceDownOverlay />}
     </CardWrapper>
   );

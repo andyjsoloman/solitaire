@@ -18,19 +18,11 @@ function App() {
     <>
       <h1>FUCKIN SOLITAIRE</h1>
       <SolitaireGame />
-      {/* <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
-          gap: "1rem",
-          padding: "2rem",
-        }}
-      >
-        {deck.map((card) => (
-          <Card key={card.id} rank={card.rank} suit={card.suit} />
-        ))}
-      </div> */}
-      <GameBoard tableau={gameState.tableau} stock={gameState.stock} />
+      <GameBoard
+        tableau={gameState.tableau}
+        stock={gameState.stock}
+        setGameState={setGameState}
+      />
       <Leaderboard />
     </>
   );
