@@ -219,13 +219,17 @@ function GameBoard({
 
       if (!canMoveToFoundation) return prev;
 
-      // From waste
+      // ✅ From waste
       if (sourceColKey === "waste") {
         const lastCard = newWaste.pop();
         if (lastCard.id !== card.id) return prev;
 
         destPile.push(lastCard);
         newFoundations[suit] = destPile;
+
+        if (checkWin(newFoundations)) {
+          setIsGameWon(true);
+        }
 
         return {
           ...prev,
@@ -234,7 +238,7 @@ function GameBoard({
         };
       }
 
-      // From tableau
+      // ✅ From tableau
       const colIndex = parseInt(sourceColKey);
       const sourceCol = newTableau[colIndex];
       const cardIndex = sourceCol.findIndex((c) => c.id === card.id);
@@ -244,9 +248,12 @@ function GameBoard({
       destPile.push(cardToMove);
       newFoundations[suit] = destPile;
 
-      // Flip card underneath
       if (sourceCol.length > 0 && !sourceCol[sourceCol.length - 1].faceUp) {
         sourceCol[sourceCol.length - 1].faceUp = true;
+      }
+
+      if (checkWin(newFoundations)) {
+        setIsGameWon(true);
       }
 
       return {

@@ -9,8 +9,9 @@ export default function Leaderboard() {
       const { data, error } = await supabase
         .from("leaderboard")
         .select("*")
-        .order("score", { ascending: false })
+        .order("time", { ascending: true }) // fastest times first
         .limit(10);
+
       if (!error) setScores(data);
     }
     fetchScores();
@@ -22,7 +23,7 @@ export default function Leaderboard() {
       <ul>
         {scores.map((s) => (
           <li key={s.id}>
-            {s.username} — {s.score}
+            {s.username} — {s.time}
           </li>
         ))}
       </ul>
