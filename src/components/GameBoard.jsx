@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Pile from "./Pile";
 import Card from "./Card";
-import { isValidMove, rankOrder } from "../utils/rules";
+import { isValidMove, rankOrder, checkWin } from "../utils/rules";
 
 const BoardWrapper = styled.div`
   display: flex;
@@ -31,7 +31,14 @@ const BottomRow = styled.div`
   gap: 1rem;
 `;
 
-function GameBoard({ tableau, stock, waste, setGameState, foundations }) {
+function GameBoard({
+  tableau,
+  stock,
+  waste,
+  setGameState,
+  foundations,
+  setIsGameWon,
+}) {
   function handleDrawCard() {
     setGameState((prev) => {
       // ✅ CASE 1: Draw from stock
@@ -100,6 +107,10 @@ function GameBoard({ tableau, stock, waste, setGameState, foundations }) {
           destPile.push(lastCard);
           newFoundations[destColKey] = destPile;
 
+          if (checkWin(newFoundations)) {
+            setIsGameWon(true);
+          }
+
           return {
             ...prev,
             waste: newWaste,
@@ -119,6 +130,10 @@ function GameBoard({ tableau, stock, waste, setGameState, foundations }) {
 
         destPile.push(cardToMove);
         newFoundations[destColKey] = destPile;
+
+        if (checkWin(newFoundations)) {
+          setIsGameWon(true);
+        }
 
         return {
           ...prev,
@@ -186,6 +201,62 @@ function GameBoard({ tableau, stock, waste, setGameState, foundations }) {
     });
   }
 
+  function handleCardDoubleClick(card, sourceColKey) {
+    setGameState((prev) => {
+      const newTableau = prev.tableau.map((col) => [...col]);
+      const newFoundations = { ...prev.foundations };
+      const newWaste = [...prev.waste];
+      const suit = card.suit;
+      const destPile = [...newFoundations[suit]];
+      const topCard = destPile[destPile.length - 1];
+
+      const cardValue = rankOrder[card.rank];
+      const topValue = topCard ? rankOrder[topCard.rank] : 0;
+
+      const canMoveToFoundation =
+        (destPile.length === 0 && card.rank === "A") ||
+        (topCard && card.suit === suit && cardValue === topValue + 1);
+
+      if (!canMoveToFoundation) return prev;
+
+      // From waste
+      if (sourceColKey === "waste") {
+        const lastCard = newWaste.pop();
+        if (lastCard.id !== card.id) return prev;
+
+        destPile.push(lastCard);
+        newFoundations[suit] = destPile;
+
+        return {
+          ...prev,
+          waste: newWaste,
+          foundations: newFoundations,
+        };
+      }
+
+      // From tableau
+      const colIndex = parseInt(sourceColKey);
+      const sourceCol = newTableau[colIndex];
+      const cardIndex = sourceCol.findIndex((c) => c.id === card.id);
+      if (cardIndex !== sourceCol.length - 1) return prev; // must be top card
+
+      const [cardToMove] = sourceCol.splice(cardIndex);
+      destPile.push(cardToMove);
+      newFoundations[suit] = destPile;
+
+      // Flip card underneath
+      if (sourceCol.length > 0 && !sourceCol[sourceCol.length - 1].faceUp) {
+        sourceCol[sourceCol.length - 1].faceUp = true;
+      }
+
+      return {
+        ...prev,
+        tableau: newTableau,
+        foundations: newFoundations,
+      };
+    });
+  }
+
   function getCanDrop(card, destColKey) {
     if (["hearts", "diamonds", "clubs", "spades"].includes(destColKey)) {
       const pile = foundations[destColKey];
@@ -219,7 +290,14 @@ function GameBoard({ tableau, stock, waste, setGameState, foundations }) {
           </Pile>
           <Pile columnIndex="waste">
             {waste && waste.length > 0 && (
-              <Card {...waste[waste.length - 1]} index={0} sourceCol="waste" />
+              <Card
+                {...waste[waste.length - 1]}
+                index={0}
+                sourceCol="waste"
+                onDoubleClick={() =>
+                  handleCardDoubleClick(waste[waste.length - 1], "waste")
+                }
+              />
             )}
           </Pile>
         </LeftGroup>
@@ -253,7 +331,13 @@ function GameBoard({ tableau, stock, waste, setGameState, foundations }) {
             getCanDrop={(card) => getCanDrop(card, i)}
           >
             {column.map((card, index) => (
-              <Card key={card.id} {...card} index={index} sourceCol={i} />
+              <Card
+                key={card.id}
+                {...card}
+                index={index}
+                sourceCol={String(i)}
+                onDoubleClick={() => handleCardDoubleClick(card, String(i))}
+              />
             ))}
           </Pile>
         ))}

@@ -45,7 +45,7 @@ function getSuitSymbol(suit) {
   }
 }
 
-function Card({ rank, suit, faceUp, index, id, sourceCol }) {
+function Card({ rank, suit, faceUp, index, id, sourceCol, onDoubleClick }) {
   const [{ isDragging }, dragRef] = useDrag({
     type: "CARD",
     item: { id, rank, suit, index, sourceCol },
@@ -62,6 +62,7 @@ function Card({ rank, suit, faceUp, index, id, sourceCol }) {
       $faceUp={faceUp}
       $index={index}
       $isDraggable={faceUp}
+      onDoubleClick={onDoubleClick}
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
       {faceUp ? `${rank}${getSuitSymbol(suit)}` : <FaceDownOverlay />}

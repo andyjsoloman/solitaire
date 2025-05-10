@@ -35,3 +35,12 @@ export function isValidMove(movingCard, targetCard) {
 
   return movingColor !== targetColor && movingValue === targetValue - 1;
 }
+
+export function checkWin(foundations) {
+  return (
+    foundations.hearts.length === 13 &&
+    foundations.diamonds.length === 13 &&
+    foundations.clubs.length === 13 &&
+    foundations.spades.length === 13
+  );
+}
