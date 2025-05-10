@@ -57,5 +57,5 @@ export function dealCards(shuffledDeck) {
   // Remaining cards go into stock
   const stock = shuffledDeck.slice(deckIndex);
 
-  return { tableau, stock };
+  return { tableau, stock, waste: [] };
 }

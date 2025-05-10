@@ -31,32 +31,57 @@ const BottomRow = styled.div`
   gap: 1rem;
 `;
 
-function GameBoard({ tableau, stock, setGameState }) {
+function GameBoard({ tableau, stock, waste, setGameState }) {
+  function handleDrawCard() {
+    setGameState((prev) => {
+      if (prev.stock.length === 0) return prev;
+
+      const newStock = [...prev.stock];
+      const drawnCard = newStock.pop();
+      drawnCard.faceUp = true;
+
+      return {
+        ...prev,
+        stock: newStock,
+        waste: [...prev.waste, drawnCard],
+      };
+    });
+  }
+
   function handleDropCard(draggedCard, destColIndex) {
     setGameState((prev) => {
       const newTableau = prev.tableau.map((col) => [...col]);
 
-      const sourceColIndex = newTableau.findIndex((col) =>
-        col.some((card) => card.id === draggedCard.id)
-      );
-      const cardIndex = newTableau[sourceColIndex].findIndex(
-        (c) => c.id === draggedCard.id
-      );
-      const movingCards = newTableau[sourceColIndex].slice(cardIndex);
-      const movingCard = movingCards[0];
-
+      // Get destination info
       const destCol = newTableau[destColIndex];
       const targetCard =
         destCol.length > 0 ? destCol[destCol.length - 1] : null;
 
-      // ✅ Check if move is valid
-      if (!isValidMove(movingCard, targetCard)) return prev;
+      if (!isValidMove(draggedCard, targetCard)) return prev;
 
-      // 🧹 Remove from source
-      newTableau[sourceColIndex].splice(cardIndex);
+      // Determine source
+      if (draggedCard.sourceCol === "waste") {
+        const newWaste = [...prev.waste];
+        const lastCard = newWaste.pop();
 
-      // ✅ Flip last face-down card in source, if any
+        if (lastCard.id !== draggedCard.id) return prev; // fail-safe
+
+        destCol.push(lastCard);
+
+        return {
+          ...prev,
+          tableau: newTableau,
+          waste: newWaste,
+        };
+      }
+
+      // Otherwise: from tableau
+      const sourceColIndex = parseInt(draggedCard.sourceCol);
       const sourceCol = newTableau[sourceColIndex];
+      const cardIndex = sourceCol.findIndex((c) => c.id === draggedCard.id);
+      const movingCards = sourceCol.splice(cardIndex);
+
+      // Flip if needed
       if (
         sourceCol.length > 0 &&
         sourceCol[sourceCol.length - 1].faceUp === false
@@ -64,8 +89,7 @@ function GameBoard({ tableau, stock, setGameState }) {
         sourceCol[sourceCol.length - 1].faceUp = true;
       }
 
-      // ➕ Add to destination
-      newTableau[destColIndex].push(...movingCards);
+      destCol.push(...movingCards);
 
       return {
         ...prev,
@@ -85,8 +109,16 @@ function GameBoard({ tableau, stock, setGameState }) {
       {/* Top Row */}
       <TopRow>
         <LeftGroup>
-          <Pile>{stock.length > 0 && <Card />}</Pile>
-          <Pile /> {/* Waste */}
+          <Pile onClick={handleDrawCard}>
+            {stock.length > 0 ? (
+              <Card rank="🂠" suit="back" faceUp={false} index={0} />
+            ) : null}
+          </Pile>
+          <Pile columnIndex="waste">
+            {waste && waste.length > 0 && (
+              <Card {...waste[waste.length - 1]} index={0} sourceCol="waste" />
+            )}
+          </Pile>
         </LeftGroup>
         <RightGroup>
           {[...Array(4)].map((_, i) => (

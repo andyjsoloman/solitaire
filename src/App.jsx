@@ -22,6 +22,7 @@ function App() {
         tableau={gameState.tableau}
         stock={gameState.stock}
         setGameState={setGameState}
+        waste={gameState.waste}
       />
       <Leaderboard />
     </>

@@ -16,7 +16,7 @@ const PileWrapper = styled.div`
   transition: background-color 0.2s;
 `;
 
-function Pile({ children, onDropCard, columnIndex, getCanDrop }) {
+function Pile({ children, onDropCard, columnIndex, getCanDrop, onClick }) {
   const [{ isOver, canDrop, draggedItem }, dropRef] = useDrop({
     accept: "CARD",
     collect: (monitor) => ({
@@ -32,7 +32,9 @@ function Pile({ children, onDropCard, columnIndex, getCanDrop }) {
     canDrop: (draggedCard) => getCanDrop?.(draggedCard, columnIndex),
   });
 
-  const isSelfDrop = draggedItem?.sourceCol === columnIndex;
+  const isSelfDrop =
+    draggedItem?.sourceCol === columnIndex ||
+    (draggedItem?.sourceCol === "waste" && columnIndex === "waste");
 
   return (
     <PileWrapper
@@ -40,6 +42,7 @@ function Pile({ children, onDropCard, columnIndex, getCanDrop }) {
       $isOver={isOver}
       $canDrop={canDrop}
       $isSelfDrop={isSelfDrop}
+      onClick={onClick}
     >
       {children}
     </PileWrapper>
