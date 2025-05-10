@@ -5,7 +5,7 @@ const colorMap = {
   clubs: "black",
 };
 
-const rankOrder = {
+export const rankOrder = {
   A: 1,
   2: 2,
   3: 3,

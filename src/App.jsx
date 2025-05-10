@@ -23,6 +23,7 @@ function App() {
         stock={gameState.stock}
         setGameState={setGameState}
         waste={gameState.waste}
+        foundations={gameState.foundations}
       />
       <Leaderboard />
     </>
