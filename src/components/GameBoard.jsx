@@ -34,17 +34,34 @@ const BottomRow = styled.div`
 function GameBoard({ tableau, stock, waste, setGameState, foundations }) {
   function handleDrawCard() {
     setGameState((prev) => {
-      if (prev.stock.length === 0) return prev;
+      // ✅ CASE 1: Draw from stock
+      if (prev.stock.length > 0) {
+        const newStock = [...prev.stock];
+        const drawnCard = newStock.pop();
+        drawnCard.faceUp = true;
 
-      const newStock = [...prev.stock];
-      const drawnCard = newStock.pop();
-      drawnCard.faceUp = true;
+        return {
+          ...prev,
+          stock: newStock,
+          waste: [...prev.waste, drawnCard],
+        };
+      }
 
-      return {
-        ...prev,
-        stock: newStock,
-        waste: [...prev.waste, drawnCard],
-      };
+      // ✅ CASE 2: Reset stock from waste
+      if (prev.waste.length > 0) {
+        const resetStock = [...prev.waste]
+          .map((card) => ({ ...card, faceUp: false })) // turn face-down
+          .reverse(); // reverse order
+
+        return {
+          ...prev,
+          stock: resetStock,
+          waste: [],
+        };
+      }
+
+      // No stock and no waste — do nothing
+      return prev;
     });
   }
 
@@ -129,6 +146,24 @@ function GameBoard({ tableau, stock, waste, setGameState, foundations }) {
           ...prev,
           tableau: newTableau,
           waste: newWaste,
+        };
+      }
+
+      // From foundation
+      if (draggedCard.sourceCol?.startsWith("foundation-")) {
+        const suit = draggedCard.suit;
+        const newFoundationsPile = [...newFoundations[suit]];
+        const lastCard = newFoundationsPile.pop();
+
+        if (lastCard?.id !== draggedCard.id) return prev;
+
+        destCol.push(lastCard);
+        newFoundations[suit] = newFoundationsPile;
+
+        return {
+          ...prev,
+          tableau: newTableau,
+          foundations: newFoundations,
         };
       }
 
