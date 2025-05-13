@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 
 import { generateDeck, shuffleDeck, dealCards } from "./utils/deck";
 import supabase from "./lib/supabaseClient";
+import Modal from "./components/Modal";
 
 // Helper to initialize a new game
 function getInitialGameState() {
@@ -20,6 +21,8 @@ function App() {
   const [isGameWon, setIsGameWon] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [playerName, setPlayerName] = useState("");
+  const [showWinModal, setShowWinModal] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,20 +34,30 @@ function App() {
 
   useEffect(() => {
     if (isGameWon) {
-      const timeInSeconds = Math.floor((Date.now() - startTime) / 1000);
-
-      supabase
-        .from("leaderboard")
-        .insert([
-          {
-            username: "Player", // replace with user input if available
-            time: timeInSeconds,
-          },
-        ])
-        .then((res) => console.log("Score submitted:", res))
-        .catch((err) => console.error("Error submitting score:", err));
+      setShowWinModal(true);
     }
   }, [isGameWon]);
+
+  async function submitScore() {
+    const timeInSeconds = Math.floor((Date.now() - startTime) / 1000);
+
+    if (!playerName) return alert("Please enter your name");
+
+    const { error } = await supabase.from("leaderboard").insert([
+      {
+        username: playerName,
+        time: timeInSeconds,
+      },
+    ]);
+
+    if (error) {
+      console.error("Submission failed:", error);
+      return alert("Failed to save score.");
+    }
+
+    setShowWinModal(false);
+    setPlayerName("");
+  }
 
   function resetGame() {
     setGameState(getInitialGameState());
@@ -69,6 +82,17 @@ function App() {
         isGameWon={isGameWon}
         setIsGameWon={setIsGameWon}
       />
+      {showWinModal && (
+        <Modal>
+          <h2>🎉 You win!</h2>
+          <input
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+          />
+          <button onClick={submitScore}>Submit</button>
+        </Modal>
+      )}
+
       <Leaderboard />
     </>
   );
