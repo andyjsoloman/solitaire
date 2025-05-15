@@ -1,7 +1,7 @@
 import "./App.css";
 import Card from "./components/Card";
 import Leaderboard from "./components/Leaderboard";
-import SolitaireGame from "./components/SolitaireGame";
+
 import GameBoard from "./components/GameBoard";
 
 import { useState, useEffect } from "react";
@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { generateDeck, shuffleDeck, dealCards } from "./utils/deck";
 import supabase from "./lib/supabaseClient";
 import Modal from "./components/Modal";
+import { formatTime } from "./utils/formatTime";
 
 // Helper to initialize a new game
 function getInitialGameState() {
@@ -23,30 +24,32 @@ function App() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [playerName, setPlayerName] = useState("");
   const [showWinModal, setShowWinModal] = useState(false);
+  const [finalTime, setFinalTime] = useState(null);
 
   useEffect(() => {
+    if (isGameWon) return;
+
     const interval = setInterval(() => {
       setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [startTime]);
+  }, [startTime, isGameWon]);
 
   useEffect(() => {
     if (isGameWon) {
+      setFinalTime(Math.floor((Date.now() - startTime) / 1000));
       setShowWinModal(true);
     }
-  }, [isGameWon]);
+  }, [isGameWon, startTime]);
 
   async function submitScore() {
-    const timeInSeconds = Math.floor((Date.now() - startTime) / 1000);
-
     if (!playerName) return alert("Please enter your name");
 
     const { error } = await supabase.from("leaderboard").insert([
       {
         username: playerName,
-        time: timeInSeconds,
+        time: finalTime,
       },
     ]);
 
@@ -64,14 +67,25 @@ function App() {
     setIsGameWon(false);
     setStartTime(Date.now());
     setElapsedTime(0);
+    setFinalTime(null);
   }
+
+  const [, setBlink] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBlink((prev) => !prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <h1>FUCKIN SOLITAIRE</h1>
-      <SolitaireGame />
+
       <button onClick={resetGame}>🔄 Restart Game</button>
       {isGameWon && <h2>🎉 You win! 🎉</h2>}
-      <p>⏱ Time: {elapsedTime}s</p>
+      {!isGameWon && <p>⏱ Time: {formatTime(elapsedTime, true)}</p>}
 
       <GameBoard
         tableau={gameState.tableau}
@@ -84,11 +98,15 @@ function App() {
       />
       {showWinModal && (
         <Modal>
-          <h2>🎉 You win!</h2>
+          <h3 style={{ color: "black" }}>
+            🎉 You win! Enter a Name for the Leaderboard
+          </h3>
           <input
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
           />
+          <p style={{ color: "black" }}>Final time: {formatTime(finalTime)}</p>
+
           <button onClick={submitScore}>Submit</button>
         </Modal>
       )}
