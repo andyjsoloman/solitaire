@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { formatTime } from "../utils/formatTime";
 
 export default function Leaderboard() {
   const [scores, setScores] = useState([]);
@@ -23,7 +24,7 @@ export default function Leaderboard() {
       <ul>
         {scores.map((s) => (
           <li key={s.id}>
-            {s.username} — {s.time}
+            {s.username} — {formatTime(s.time)}
           </li>
         ))}
       </ul>
