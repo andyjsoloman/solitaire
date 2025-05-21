@@ -81,7 +81,7 @@ function App() {
 
   return (
     <>
-      <h1>FUCKIN SOLITAIRE</h1>
+      <h1>SOLITAIRE</h1>
 
       <button onClick={resetGame}>🔄 Restart Game</button>
       {isGameWon && <h2>🎉 You win! 🎉</h2>}
