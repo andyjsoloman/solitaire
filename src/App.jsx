@@ -10,6 +10,9 @@ import { generateDeck, shuffleDeck, dealCards } from "./utils/deck";
 import supabase from "./lib/supabaseClient";
 import Modal from "./components/Modal";
 import { formatTime } from "./utils/formatTime";
+import { CRTOverlay } from "./components/CRTOverlay";
+import { CRTText } from "./components/CRTTExt";
+import CRTModeToggle from "./components/CRTModeToggle";
 
 // Helper to initialize a new game
 function getInitialGameState() {
@@ -81,6 +84,9 @@ function App() {
 
   return (
     <>
+      <CRTModeToggle />
+
+      <CRTText>SOLITAIRE</CRTText>
       <h1>SOLITAIRE</h1>
 
       <button onClick={resetGame}>🔄 Restart Game</button>
