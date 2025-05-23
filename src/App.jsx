@@ -13,7 +13,7 @@ import supabase from "./lib/supabaseClient";
 import Modal from "./components/Modal";
 import { formatTime } from "./utils/formatTime";
 import { CRTOverlay } from "./components/CRTOverlay";
-import { CRTText } from "./components/CRTTExt";
+import { CRTText } from "./components/CRTText";
 import CRTModeToggle from "./components/CRTModeToggle";
 
 import VictoryEmitter from "./components/VictoryEmitter";
