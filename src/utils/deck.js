@@ -42,19 +42,17 @@ export function dealCards(shuffledDeck) {
   const tableau = [];
   let deckIndex = 0;
 
-  // Deal cards to 7 tableau columns
   for (let col = 0; col < 7; col++) {
     const column = [];
 
     for (let row = 0; row <= col; row++) {
       const card = shuffledDeck[deckIndex++];
-      column.push({ ...card, faceUp: row === col }); // only top card face up
+      column.push({ ...card, faceUp: row === col }); //top card face up
     }
 
     tableau.push(column);
   }
-
-  // Remaining cards go into stock
+  //remaining cards go into stock
   const stock = shuffledDeck.slice(deckIndex);
 
   return {
@@ -68,4 +66,38 @@ export function dealCards(shuffledDeck) {
       spades: [],
     },
   };
+}
+
+export function getCardImageFilename(suit, rank) {
+  const suitMap = {
+    hearts: "HEART",
+    diamonds: "DIAMOND",
+    clubs: "CLUB",
+    spades: "SPADE",
+  };
+
+  const rankMap = {
+    A: "1",
+    J: "11-JACK",
+    Q: "12-QUEEN",
+    K: "13-KING",
+  };
+
+  const normalizedSuit = suitMap[suit.toLowerCase()] || suit.toUpperCase();
+  const rankKey = rank.toString().toUpperCase();
+  const normalizedRank = rankMap[rankKey] || rankKey;
+
+  return `${normalizedSuit}-${normalizedRank}.svg`;
+}
+
+export function preloadCardImages() {
+  for (const suit of SUITS) {
+    for (const rank of RANKS) {
+      const img = new Image();
+      img.src = `/cards/${getCardImageFilename(suit, rank)}`;
+    }
+  }
+
+  // Optionally preload card back
+  new Image().src = "/TrebleClef.svg";
 }

@@ -28,21 +28,36 @@ const FaceDownOverlay = styled.div`
   inset: 0;
   background-color: #2e3a59;
   border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
-function getSuitSymbol(suit) {
-  switch (suit) {
-    case "hearts":
-      return "♥";
-    case "diamonds":
-      return "♦";
-    case "clubs":
-      return "♣";
-    case "spades":
-      return "♠";
-    default:
-      return "";
-  }
+const CardBackIcon = styled.img`
+  width: 40px;
+  height: auto;
+`;
+
+function getCardImageFilename(suit, rank) {
+  const suitMap = {
+    hearts: "HEART",
+    diamonds: "DIAMOND",
+    clubs: "CLUB",
+    spades: "SPADE",
+  };
+
+  const rankMap = {
+    A: "1",
+    J: "11-JACK",
+    Q: "12-QUEEN",
+    K: "13-KING",
+  };
+
+  const normalizedSuit = suitMap[suit.toLowerCase()] || suit.toUpperCase();
+  const rankKey = rank.toString().toUpperCase();
+  const normalizedRank = rankMap[rankKey] || rankKey;
+
+  return `${normalizedSuit}-${normalizedRank}.svg`;
 }
 
 function Card({ rank, suit, faceUp, index, id, sourceCol, onDoubleClick }) {
@@ -65,7 +80,17 @@ function Card({ rank, suit, faceUp, index, id, sourceCol, onDoubleClick }) {
       onDoubleClick={onDoubleClick}
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
-      {faceUp ? `${rank}${getSuitSymbol(suit)}` : <FaceDownOverlay />}
+      {faceUp ? (
+        <img
+          src={`/cards/${getCardImageFilename(suit, rank)}`}
+          alt={`${rank} of ${suit}`}
+          style={{ width: "100%", height: "100%", borderRadius: "8px" }}
+        />
+      ) : (
+        <FaceDownOverlay>
+          <CardBackIcon src="/TrebleClef.svg" alt="Card back" />
+        </FaceDownOverlay>
+      )}
     </CardWrapper>
   );
 }

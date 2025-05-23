@@ -7,6 +7,7 @@ const BasePileWrapper = styled.div`
   min-height: 120px;
   border-radius: 8px;
   position: relative;
+  flex-shrink: 0;
 `;
 
 // Interactive wrapper with drag-and-drop visual styling
