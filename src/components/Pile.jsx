@@ -1,13 +1,17 @@
 import { useDrop } from "react-dnd";
 import styled from "styled-components";
 
-const PileWrapper = styled.div`
+// Base layout styles shared by both interactive and dummy versions
+const BasePileWrapper = styled.div`
   width: 80px;
   min-height: 120px;
-  border: 1px dashed #aaa;
   border-radius: 8px;
-  padding: 4px;
   position: relative;
+`;
+
+// Interactive wrapper with drag-and-drop visual styling
+const PileWrapper = styled(BasePileWrapper)`
+  border: 1px dashed #aaa;
   background-color: ${({ $isOver, $canDrop, $isSelfDrop }) => {
     if (!$isOver) return "transparent";
     if ($isSelfDrop) return "transparent";
@@ -47,6 +51,10 @@ function Pile({ children, onDropCard, columnIndex, getCanDrop, onClick }) {
       {children}
     </PileWrapper>
   );
+}
+
+export function DummyPile({ children }) {
+  return <BasePileWrapper>{children}</BasePileWrapper>;
 }
 
 export default Pile;

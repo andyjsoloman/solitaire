@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Pile from "./Pile";
+import Pile, { DummyPile } from "./Pile";
 import Card from "./Card";
 import { isValidMove, rankOrder, checkWin } from "../utils/rules";
 
@@ -8,27 +8,30 @@ const BoardWrapper = styled.div`
   flex-direction: column;
   gap: 2rem;
   padding: 2rem;
+  width: 60%;
 `;
 
 const TopRow = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
+  gap: 2rem;
 `;
 
 const LeftGroup = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
 `;
 
 const RightGroup = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
 `;
 
 const BottomRow = styled.div`
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: end;
+  /* justify-content: space-between; */
+  gap: 2rem;
 `;
 
 function GameBoard({
@@ -308,6 +311,7 @@ function GameBoard({
             )}
           </Pile>
         </LeftGroup>
+        <DummyPile />
         <RightGroup>
           {["hearts", "diamonds", "clubs", "spades"].map((suit) => (
             <Pile
@@ -317,11 +321,13 @@ function GameBoard({
               getCanDrop={(card) => getCanDrop(card, suit)}
             >
               {foundations[suit].length > 0 && (
-                <Card
-                  {...foundations[suit][foundations[suit].length - 1]}
-                  index={0}
-                  sourceCol={`foundation-${suit}`}
-                />
+                <div className="foundation-card">
+                  <Card
+                    {...foundations[suit][foundations[suit].length - 1]}
+                    index={0}
+                    sourceCol={`foundation-${suit}`}
+                  />
+                </div>
               )}
             </Pile>
           ))}

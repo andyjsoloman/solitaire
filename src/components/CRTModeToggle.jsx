@@ -35,7 +35,7 @@ export default function CRTModeToggle() {
 
   return (
     <>
-      {crtEnabled && <CRTOverlay flickerMin={0.1} flickerMax={0.25} />}
+      {crtEnabled && <CRTOverlay $flickerMin={0.1} $flickerMax={0.25} />}
       <ToggleButton onClick={toggleCRT}>
         CRT Mode {crtEnabled ? "ON" : "OFF"}
       </ToggleButton>

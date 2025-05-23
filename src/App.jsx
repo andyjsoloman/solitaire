@@ -1,3 +1,5 @@
+import styled from "styled-components";
+
 import "./App.css";
 import Card from "./components/Card";
 import Leaderboard from "./components/Leaderboard";
@@ -13,6 +15,14 @@ import { formatTime } from "./utils/formatTime";
 import { CRTOverlay } from "./components/CRTOverlay";
 import { CRTText } from "./components/CRTTExt";
 import CRTModeToggle from "./components/CRTModeToggle";
+
+import VictoryEmitter from "./components/VictoryEmitter";
+
+const MainDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 60px;
+`;
 
 // Helper to initialize a new game
 function getInitialGameState() {
@@ -92,32 +102,36 @@ function App() {
       <button onClick={resetGame}>🔄 Restart Game</button>
       {isGameWon && <h2>🎉 You win! 🎉</h2>}
       {!isGameWon && <p>⏱ Time: {formatTime(elapsedTime, true)}</p>}
+      <MainDiv>
+        <Leaderboard />
+        <GameBoard
+          tableau={gameState.tableau}
+          stock={gameState.stock}
+          setGameState={setGameState}
+          waste={gameState.waste}
+          foundations={gameState.foundations}
+          isGameWon={isGameWon}
+          setIsGameWon={setIsGameWon}
+        />
+        {isGameWon && <VictoryEmitter foundations={gameState.foundations} />}
 
-      <GameBoard
-        tableau={gameState.tableau}
-        stock={gameState.stock}
-        setGameState={setGameState}
-        waste={gameState.waste}
-        foundations={gameState.foundations}
-        isGameWon={isGameWon}
-        setIsGameWon={setIsGameWon}
-      />
-      {showWinModal && (
-        <Modal>
-          <h3 style={{ color: "black" }}>
-            🎉 You win! Enter a Name for the Leaderboard
-          </h3>
-          <input
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-          />
-          <p style={{ color: "black" }}>Final time: {formatTime(finalTime)}</p>
+        {showWinModal && (
+          <Modal>
+            <h3 style={{ color: "black" }}>
+              🎉 You win! Enter a Name for the Leaderboard
+            </h3>
+            <input
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+            />
+            <p style={{ color: "black" }}>
+              Final time: {formatTime(finalTime)}
+            </p>
 
-          <button onClick={submitScore}>Submit</button>
-        </Modal>
-      )}
-
-      <Leaderboard />
+            <button onClick={submitScore}>Submit</button>
+          </Modal>
+        )}
+      </MainDiv>
     </>
   );
 }
