@@ -41,7 +41,7 @@ function App() {
 
   useEffect(() => {
     if (isGameWon) return;
-
+    console.log("test");
     const interval = setInterval(() => {
       setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
