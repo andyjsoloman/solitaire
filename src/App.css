@@ -1,12 +1,21 @@
 :root {
-  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
-    "DejaVu Sans Mono", monospace;
+  font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+    source-sans-pro, sans-serif;
   font-weight: normal;
   line-height: 1.5;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
+
   background-color: hsl(116, 87%, 15%);
+  background-image: radial-gradient(
+    circle at center,
+    hsla(116, 87%, 18%, 0.2) 0%,
+    hsl(116, 87%, 15%) 60%,
+    hsl(116, 87%, 12%) 100%
+  );
+  /* background-repeat: no-repeat; */
+  background-size: cover;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

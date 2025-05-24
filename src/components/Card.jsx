@@ -69,6 +69,7 @@ function Card({
   id,
   sourceCol,
   onDoubleClick,
+  // eslint-disable-next-line no-unused-vars
   isOverlay = false,
 }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({

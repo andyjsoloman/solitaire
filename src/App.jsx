@@ -26,9 +26,25 @@ import CRTModeToggle from "./components/CRTModeToggle";
 import VictoryEmitter from "./components/VictoryEmitter";
 import { getCanDrop as canDropRule, handleDropCard } from "./utils/rules";
 
+const HeaderDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+`;
+const TimerWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin: 12px 60px;
+`;
+const TimerDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const MainDiv = styled.div`
   display: flex;
-  justify-content: space-between;
+
   margin: 20px 60px;
 `;
 
@@ -130,11 +146,16 @@ function App() {
       collisionDetection={closestCenter}
     >
       <CRTModeToggle />
-      <CRTText>SOLITAIRRE</CRTText>
-      <h1>SOLITAIRE</h1>
-      <button onClick={resetGame}>🔄 Restart Game</button>
-      {isGameWon && <h2>🎉 You win! 🎉</h2>}
-      {!isGameWon && <p>⏱ Time: {formatTime(elapsedTime, true)}</p>}
+      <HeaderDiv>
+        <h1>SOLITAIRE</h1>
+      </HeaderDiv>
+      <TimerWrapper>
+        <TimerDiv>
+          <button onClick={resetGame}>🔄 Restart Game</button>
+          {isGameWon && <h2>🎉 You win! 🎉</h2>}
+          {!isGameWon && <p>⏱ Time: {formatTime(elapsedTime, true)}</p>}
+        </TimerDiv>
+      </TimerWrapper>
 
       <MainDiv>
         <Leaderboard />
