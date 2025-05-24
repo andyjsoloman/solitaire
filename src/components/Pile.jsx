@@ -9,6 +9,16 @@ const BasePileWrapper = styled.div`
   border-radius: 8px;
   position: relative;
   flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 60px;
+    min-height: 90px;
+  }
+
+  @media (max-width: 480px) {
+    width: 50px;
+    min-height: 75px;
+  }
 `;
 
 // Interactive wrapper with drag-and-drop visual styling

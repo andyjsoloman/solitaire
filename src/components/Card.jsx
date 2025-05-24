@@ -17,11 +17,32 @@ const CardWrapper = styled.div.attrs({})`
   font-size: 24px;
   font-weight: bold;
   position: relative;
-  margin-top: ${({ $index }) => ($index > 0 ? `-100px` : "0px")};
+  margin-top: ${({ $index }) =>
+    $index > 0 ? `calc(-1.25 * var(--card-offset, 80px))` : "0px"};
+
+  @media (max-width: 768px) {
+    --card-offset: 60px;
+  }
+
+  @media (max-width: 480px) {
+    --card-offset: 50px;
+  }
   z-index: ${({ $index }) => $index + 1};
   cursor: ${({ $isDraggable }) => ($isDraggable ? "grab" : "default")};
   touch-action: none; /* Important for mobile drag */
   z-index: ${({ $isOverlay, $index }) => ($isOverlay ? 9999 : $index + 1)};
+
+  @media (max-width: 768px) {
+    width: 60px;
+    height: 90px;
+    font-size: 20px;
+  }
+
+  @media (max-width: 480px) {
+    width: 50px;
+    height: 75px;
+    font-size: 16px;
+  }
 `;
 
 const FaceDownOverlay = styled.div`

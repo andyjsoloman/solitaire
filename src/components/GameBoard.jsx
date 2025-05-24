@@ -9,6 +9,11 @@ const BoardWrapper = styled.div`
   gap: 2rem;
   padding: 2rem;
   width: 60%;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+    padding: 1rem;
+  }
 `;
 
 const TopRow = styled.div`

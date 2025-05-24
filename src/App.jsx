@@ -31,11 +31,20 @@ const HeaderDiv = styled.div`
   justify-content: center;
   padding-top: 40px;
   padding-bottom: 40px;
+
+  @media (max-width: 768px) {
+    padding: 20px 10px;
+  }
 `;
 const TimerWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin: 12px 60px;
+
+  @media (max-width: 768px) {
+    margin: 12px 20px;
+    justify-content: center;
+  }
 `;
 const TimerDiv = styled.div`
   display: flex;
@@ -46,6 +55,13 @@ const MainDiv = styled.div`
   display: flex;
 
   margin: 20px 60px;
+  gap: 2rem;
+
+  @media (max-width: 1024px) {
+    flex-direction: column-reverse;
+    align-items: center;
+    margin: 20px;
+  }
 `;
 
 function getInitialGameState() {
