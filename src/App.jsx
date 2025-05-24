@@ -130,7 +130,7 @@ function App() {
       collisionDetection={closestCenter}
     >
       <CRTModeToggle />
-      <CRTText>SOLITAIRE</CRTText>
+      <CRTText>SOLITAIRRRE</CRTText>
       <h1>SOLITAIRE</h1>
       <button onClick={resetGame}>🔄 Restart Game</button>
       {isGameWon && <h2>🎉 You win! 🎉</h2>}
