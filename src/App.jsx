@@ -6,6 +6,8 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
+  TouchSensor,
+  KeyboardSensor,
   DragOverlay,
 } from "@dnd-kit/core";
 
@@ -46,10 +48,12 @@ function App() {
   const [activeCard, setActiveCard] = useState(null);
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
+      activationConstraint: { distance: 5 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 100, tolerance: 5 },
+    }),
+    useSensor(KeyboardSensor)
   );
 
   useEffect(() => {

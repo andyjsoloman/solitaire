@@ -1,7 +1,6 @@
 // src/components/Card.jsx
 import styled from "styled-components";
 import { useDraggable } from "@dnd-kit/core";
-import { useEffect } from "react";
 
 const CardWrapper = styled.div.attrs({})`
   width: 80px;
