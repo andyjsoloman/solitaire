@@ -1,13 +1,19 @@
+// src/App.jsx
 import styled from "styled-components";
+import {
+  DndContext,
+  closestCenter,
+  useSensor,
+  useSensors,
+  PointerSensor,
+  DragOverlay,
+} from "@dnd-kit/core";
 
 import "./App.css";
 import Card from "./components/Card";
 import Leaderboard from "./components/Leaderboard";
-
 import GameBoard from "./components/GameBoard";
-
 import { useState, useEffect } from "react";
-
 import { generateDeck, shuffleDeck, dealCards } from "./utils/deck";
 import supabase from "./lib/supabaseClient";
 import Modal from "./components/Modal";
@@ -15,8 +21,8 @@ import { formatTime } from "./utils/formatTime";
 import { CRTOverlay } from "./components/CRTOverlay";
 import { CRTText } from "./components/CRTText";
 import CRTModeToggle from "./components/CRTModeToggle";
-
 import VictoryEmitter from "./components/VictoryEmitter";
+import { getCanDrop as canDropRule, handleDropCard } from "./utils/rules";
 
 const MainDiv = styled.div`
   display: flex;
@@ -24,7 +30,6 @@ const MainDiv = styled.div`
   margin: 20px 60px;
 `;
 
-// Helper to initialize a new game
 function getInitialGameState() {
   const deck = shuffleDeck(generateDeck());
   return dealCards(deck);
@@ -38,14 +43,20 @@ function App() {
   const [playerName, setPlayerName] = useState("");
   const [showWinModal, setShowWinModal] = useState(false);
   const [finalTime, setFinalTime] = useState(null);
+  const [activeCard, setActiveCard] = useState(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
 
   useEffect(() => {
     if (isGameWon) return;
-
     const interval = setInterval(() => {
       setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
-
     return () => clearInterval(interval);
   }, [startTime, isGameWon]);
 
@@ -83,38 +94,63 @@ function App() {
     setFinalTime(null);
   }
 
-  const [, setBlink] = useState(false);
+  function handleDragStart(event) {
+    setActiveCard(event.active.data.current);
+  }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBlink((prev) => !prev);
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
+  function handleDragEnd(event) {
+    const { active, over } = event;
+    if (!over) return;
+
+    const draggedCard = active.data.current;
+    const targetKey = over.data?.current?.columnIndex;
+    console.log("Drag End:", { draggedCard, targetKey });
+
+    if (
+      draggedCard &&
+      targetKey !== undefined &&
+      canDropRule(draggedCard, targetKey, gameState)
+    ) {
+      setGameState((prev) =>
+        handleDropCard(draggedCard, targetKey, prev, setIsGameWon)
+      );
+    }
+    setActiveCard(null);
+  }
 
   return (
-    <>
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      collisionDetection={closestCenter}
+    >
       <CRTModeToggle />
-
       <CRTText>SOLITAIRE</CRTText>
       <h1>SOLITAIRE</h1>
-
       <button onClick={resetGame}>🔄 Restart Game</button>
       {isGameWon && <h2>🎉 You win! 🎉</h2>}
       {!isGameWon && <p>⏱ Time: {formatTime(elapsedTime, true)}</p>}
+
       <MainDiv>
         <Leaderboard />
         <GameBoard
           tableau={gameState.tableau}
           stock={gameState.stock}
-          setGameState={setGameState}
           waste={gameState.waste}
           foundations={gameState.foundations}
+          setGameState={setGameState}
           isGameWon={isGameWon}
           setIsGameWon={setIsGameWon}
+          activeCard={activeCard}
+          getCanDrop={(card, destKey) => canDropRule(card, destKey, gameState)}
         />
+        <DragOverlay>
+          {activeCard ? (
+            <Card {...activeCard} faceUp={true} index={0} isOverlay />
+          ) : null}
+        </DragOverlay>
         {isGameWon && <VictoryEmitter foundations={gameState.foundations} />}
-
         {showWinModal && (
           <Modal>
             <h3 style={{ color: "black" }}>
@@ -127,12 +163,11 @@ function App() {
             <p style={{ color: "black" }}>
               Final time: {formatTime(finalTime)}
             </p>
-
             <button onClick={submitScore}>Submit</button>
           </Modal>
         )}
       </MainDiv>
-    </>
+    </DndContext>
   );
 }
 

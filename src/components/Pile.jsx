@@ -1,5 +1,6 @@
-import { useDrop } from "react-dnd";
+// src/components/Pile.jsx
 import styled from "styled-components";
+import { useDroppable } from "@dnd-kit/core";
 
 // Base layout styles shared by both interactive and dummy versions
 const BasePileWrapper = styled.div`
@@ -21,29 +22,24 @@ const PileWrapper = styled(BasePileWrapper)`
   transition: background-color 0.2s;
 `;
 
-function Pile({ children, onDropCard, columnIndex, getCanDrop, onClick }) {
-  const [{ isOver, canDrop, draggedItem }, dropRef] = useDrop({
-    accept: "CARD",
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
-      draggedItem: monitor.getItem(),
-    }),
-    drop: (draggedCard) => {
-      if (getCanDrop?.(draggedCard, columnIndex)) {
-        onDropCard?.(draggedCard, columnIndex);
-      }
-    },
-    canDrop: (draggedCard) => getCanDrop?.(draggedCard, columnIndex),
+function Pile({ children, columnIndex, draggingData, getCanDrop, onClick }) {
+  const { isOver, setNodeRef } = useDroppable({
+    id: `pile-${columnIndex}`,
+    data: { columnIndex },
   });
 
+  const canDrop =
+    draggingData && typeof getCanDrop === "function"
+      ? getCanDrop(draggingData, columnIndex)
+      : false;
+
   const isSelfDrop =
-    draggedItem?.sourceCol === columnIndex ||
-    (draggedItem?.sourceCol === "waste" && columnIndex === "waste");
+    draggingData?.sourceCol === columnIndex ||
+    (draggingData?.sourceCol === "waste" && columnIndex === "waste");
 
   return (
     <PileWrapper
-      ref={dropRef}
+      ref={setNodeRef}
       $isOver={isOver}
       $canDrop={canDrop}
       $isSelfDrop={isSelfDrop}
@@ -54,6 +50,7 @@ function Pile({ children, onDropCard, columnIndex, getCanDrop, onClick }) {
   );
 }
 
+// Dummy version that only shares layout without interaction
 export function DummyPile({ children }) {
   return <BasePileWrapper>{children}</BasePileWrapper>;
 }

@@ -1,6 +1,7 @@
 // src/components/Card.jsx
 import styled from "styled-components";
-import { useDrag } from "react-dnd";
+import { useDraggable } from "@dnd-kit/core";
+import { useEffect } from "react";
 
 const CardWrapper = styled.div.attrs({})`
   width: 80px;
@@ -17,10 +18,11 @@ const CardWrapper = styled.div.attrs({})`
   font-size: 24px;
   font-weight: bold;
   position: relative;
-  margin-top: ${({ $index }) =>
-    $index > 0 ? `-100px` : "0px"}; /* Slight overlap using negative margin */
-  z-index: ${({ $index }) => $index + 1}; /* Ensure the top card stays on top */
+  margin-top: ${({ $index }) => ($index > 0 ? `-100px` : "0px")};
+  z-index: ${({ $index }) => $index + 1};
   cursor: ${({ $isDraggable }) => ($isDraggable ? "grab" : "default")};
+  touch-action: none; /* Important for mobile drag */
+  z-index: ${({ $isOverlay, $index }) => ($isOverlay ? 9999 : $index + 1)};
 `;
 
 const FaceDownOverlay = styled.div`
@@ -60,19 +62,27 @@ function getCardImageFilename(suit, rank) {
   return `${normalizedSuit}-${normalizedRank}.svg`;
 }
 
-function Card({ rank, suit, faceUp, index, id, sourceCol, onDoubleClick }) {
-  const [{ isDragging }, dragRef] = useDrag({
-    type: "CARD",
-    item: { id, rank, suit, index, sourceCol },
-    canDrag: faceUp,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
+function Card({
+  rank,
+  suit,
+  faceUp,
+  index,
+  id,
+  sourceCol,
+  onDoubleClick,
+  isOverlay = false,
+}) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `card-${id}`,
+    data: { id, rank, suit, index, sourceCol },
+    disabled: !faceUp,
   });
 
   return (
     <CardWrapper
-      ref={dragRef}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
       $suit={suit}
       $faceUp={faceUp}
       $index={index}

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Pile, { DummyPile } from "./Pile";
 import Card from "./Card";
-import { isValidMove, rankOrder, checkWin } from "../utils/rules";
+import { rankOrder, checkWin } from "../utils/rules";
 
 const BoardWrapper = styled.div`
   display: flex;
@@ -30,7 +30,6 @@ const RightGroup = styled.div`
 const BottomRow = styled.div`
   display: flex;
   justify-content: end;
-  /* justify-content: space-between; */
   gap: 2rem;
 `;
 
@@ -41,10 +40,12 @@ function GameBoard({
   setGameState,
   foundations,
   setIsGameWon,
+  activeCard,
+  getCanDrop,
+  onDropCard,
 }) {
   function handleDrawCard() {
     setGameState((prev) => {
-      // ✅ CASE 1: Draw from stock
       if (prev.stock.length > 0) {
         const newStock = [...prev.stock];
         const drawnCard = newStock.pop();
@@ -57,11 +58,10 @@ function GameBoard({
         };
       }
 
-      // ✅ CASE 2: Reset stock from waste
       if (prev.waste.length > 0) {
         const resetStock = [...prev.waste]
-          .map((card) => ({ ...card, faceUp: false })) // turn face-down
-          .reverse(); // reverse order
+          .map((card) => ({ ...card, faceUp: false }))
+          .reverse();
 
         return {
           ...prev,
@@ -70,137 +70,7 @@ function GameBoard({
         };
       }
 
-      // No stock and no waste — do nothing
       return prev;
-    });
-  }
-
-  function handleDropCard(draggedCard, destColKey) {
-    setGameState((prev) => {
-      const newTableau = prev.tableau.map((col) => [...col]);
-      const newFoundations = { ...prev.foundations };
-
-      const isFoundation = ["hearts", "diamonds", "clubs", "spades"].includes(
-        destColKey
-      );
-
-      // === ✅ FOUNDATION DROP ===
-      if (isFoundation) {
-        const destPile = [...newFoundations[destColKey]];
-        const topCard = destPile[destPile.length - 1];
-
-        const isAce = draggedCard.rank === "A";
-        const isSameSuit = draggedCard.suit === destColKey;
-        const isNextInSequence =
-          topCard &&
-          rankOrder[draggedCard.rank] === rankOrder[topCard.rank] + 1;
-
-        const canPlace =
-          (destPile.length === 0 && isAce && isSameSuit) ||
-          (topCard && isSameSuit && isNextInSequence);
-
-        if (!canPlace) return prev;
-
-        // From waste
-        if (draggedCard.sourceCol === "waste") {
-          const newWaste = [...prev.waste];
-          const lastCard = newWaste.pop();
-          if (lastCard.id !== draggedCard.id) return prev;
-
-          destPile.push(lastCard);
-          newFoundations[destColKey] = destPile;
-
-          if (checkWin(newFoundations)) {
-            setIsGameWon(true);
-          }
-
-          return {
-            ...prev,
-            waste: newWaste,
-            foundations: newFoundations,
-          };
-        }
-
-        // From tableau
-        const sourceColIndex = parseInt(draggedCard.sourceCol);
-        const sourceCol = newTableau[sourceColIndex];
-        const cardIndex = sourceCol.findIndex((c) => c.id === draggedCard.id);
-        const [cardToMove] = sourceCol.splice(cardIndex);
-
-        if (sourceCol.length > 0 && !sourceCol[sourceCol.length - 1].faceUp) {
-          sourceCol[sourceCol.length - 1].faceUp = true;
-        }
-
-        destPile.push(cardToMove);
-        newFoundations[destColKey] = destPile;
-
-        if (checkWin(newFoundations)) {
-          setIsGameWon(true);
-        }
-
-        return {
-          ...prev,
-          tableau: newTableau,
-          foundations: newFoundations,
-        };
-      }
-
-      // === ✅ TABLEAU DROP ===
-      const destCol = newTableau[destColKey];
-      const targetCard =
-        destCol.length > 0 ? destCol[destCol.length - 1] : null;
-
-      if (!isValidMove(draggedCard, targetCard)) return prev;
-
-      // From waste
-      if (draggedCard.sourceCol === "waste") {
-        const newWaste = [...prev.waste];
-        const lastCard = newWaste.pop();
-        if (lastCard.id !== draggedCard.id) return prev;
-
-        destCol.push(lastCard);
-
-        return {
-          ...prev,
-          tableau: newTableau,
-          waste: newWaste,
-        };
-      }
-
-      // From foundation
-      if (draggedCard.sourceCol?.startsWith("foundation-")) {
-        const suit = draggedCard.suit;
-        const newFoundationsPile = [...newFoundations[suit]];
-        const lastCard = newFoundationsPile.pop();
-
-        if (lastCard?.id !== draggedCard.id) return prev;
-
-        destCol.push(lastCard);
-        newFoundations[suit] = newFoundationsPile;
-
-        return {
-          ...prev,
-          tableau: newTableau,
-          foundations: newFoundations,
-        };
-      }
-
-      // From tableau
-      const sourceColIndex = parseInt(draggedCard.sourceCol);
-      const sourceCol = newTableau[sourceColIndex];
-      const cardIndex = sourceCol.findIndex((c) => c.id === draggedCard.id);
-      const movingCards = sourceCol.splice(cardIndex);
-
-      if (sourceCol.length > 0 && !sourceCol[sourceCol.length - 1].faceUp) {
-        sourceCol[sourceCol.length - 1].faceUp = true;
-      }
-
-      destCol.push(...movingCards);
-
-      return {
-        ...prev,
-        tableau: newTableau,
-      };
     });
   }
 
@@ -222,7 +92,6 @@ function GameBoard({
 
       if (!canMoveToFoundation) return prev;
 
-      // ✅ From waste
       if (sourceColKey === "waste") {
         const lastCard = newWaste.pop();
         if (lastCard.id !== card.id) return prev;
@@ -230,9 +99,7 @@ function GameBoard({
         destPile.push(lastCard);
         newFoundations[suit] = destPile;
 
-        if (checkWin(newFoundations)) {
-          setIsGameWon(true);
-        }
+        if (checkWin(newFoundations)) setIsGameWon(true);
 
         return {
           ...prev,
@@ -241,11 +108,10 @@ function GameBoard({
         };
       }
 
-      // ✅ From tableau
       const colIndex = parseInt(sourceColKey);
       const sourceCol = newTableau[colIndex];
       const cardIndex = sourceCol.findIndex((c) => c.id === card.id);
-      if (cardIndex !== sourceCol.length - 1) return prev; // must be top card
+      if (cardIndex !== sourceCol.length - 1) return prev;
 
       const [cardToMove] = sourceCol.splice(cardIndex);
       destPile.push(cardToMove);
@@ -255,9 +121,7 @@ function GameBoard({
         sourceCol[sourceCol.length - 1].faceUp = true;
       }
 
-      if (checkWin(newFoundations)) {
-        setIsGameWon(true);
-      }
+      if (checkWin(newFoundations)) setIsGameWon(true);
 
       return {
         ...prev,
@@ -267,38 +131,20 @@ function GameBoard({
     });
   }
 
-  function getCanDrop(card, destColKey) {
-    if (["hearts", "diamonds", "clubs", "spades"].includes(destColKey)) {
-      const pile = foundations[destColKey];
-      const topCard = pile[pile.length - 1];
-
-      const isSameSuit = card.suit === destColKey;
-      const cardValue = rankOrder[card.rank];
-
-      if (!topCard) {
-        return isSameSuit && card.rank === "A"; // must be Ace of matching suit
-      }
-
-      const topValue = rankOrder[topCard.rank];
-
-      return isSameSuit && cardValue === topValue + 1;
-    }
-
-    // For tableau
-    return isValidMove(card, tableau[destColKey]?.slice(-1)[0]);
-  }
-
   return (
     <BoardWrapper>
-      {/* Top Row */}
       <TopRow>
         <LeftGroup>
-          <Pile onClick={handleDrawCard}>
-            {stock.length > 0 ? (
+          <Pile onClick={handleDrawCard} getCanDrop={() => false}>
+            {stock.length > 0 && (
               <Card rank="🂠" suit="back" faceUp={false} index={0} />
-            ) : null}
+            )}
           </Pile>
-          <Pile columnIndex="waste">
+          <Pile
+            columnIndex="waste"
+            draggingData={activeCard}
+            getCanDrop={() => false}
+          >
             {waste && waste.length > 0 && (
               <Card
                 {...waste[waste.length - 1]}
@@ -317,8 +163,9 @@ function GameBoard({
             <Pile
               key={suit}
               columnIndex={suit}
-              onDropCard={handleDropCard}
               getCanDrop={(card) => getCanDrop(card, suit)}
+              draggingData={activeCard}
+              onDropCard={onDropCard}
             >
               {foundations[suit].length > 0 && (
                 <div className="foundation-card">
@@ -334,14 +181,13 @@ function GameBoard({
         </RightGroup>
       </TopRow>
 
-      {/* Bottom Row - Tableau */}
       <BottomRow>
         {tableau.map((column, i) => (
           <Pile
             key={i}
             columnIndex={i}
-            onDropCard={handleDropCard}
             getCanDrop={(card) => getCanDrop(card, i)}
+            draggingData={activeCard}
           >
             {column.map((card, index) => (
               <Card
