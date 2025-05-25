@@ -27,7 +27,7 @@ const TopRow = styled.div`
   gap: 2rem;
 
   @media (max-width: 650px) {
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 `;
 
@@ -36,7 +36,7 @@ const LeftGroup = styled.div`
   gap: 2rem;
 
   @media (max-width: 650px) {
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 `;
 
@@ -45,7 +45,7 @@ const RightGroup = styled.div`
   gap: 2rem;
 
   @media (max-width: 650px) {
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 `;
 
@@ -55,7 +55,7 @@ const BottomRow = styled.div`
   gap: 2rem;
 
   @media (max-width: 650px) {
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 `;
 

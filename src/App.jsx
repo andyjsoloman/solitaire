@@ -34,6 +34,7 @@ const HeaderDiv = styled.div`
 
   @media (max-width: 768px) {
     padding: 20px 10px;
+    margin-top: 80px;
   }
 `;
 const TimerWrapper = styled.div`
@@ -43,12 +44,17 @@ const TimerWrapper = styled.div`
 
   @media (max-width: 768px) {
     margin: 12px 20px;
-    justify-content: center;
   }
 `;
 const TimerDiv = styled.div`
   display: flex;
   flex-direction: column;
+  @media (max-width: 768px) {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    margin: 0px 20px;
+  }
 `;
 
 const MainDiv = styled.div`

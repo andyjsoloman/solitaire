@@ -8,12 +8,15 @@ const Wrapper = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 1.5rem;
-  max-width: 600px;
+  max-width: 500px;
   min-width: 400px;
   margin: 2rem auto;
   color: #1a1a1a;
 
   box-shadow: 0 8px 24px rgba(74, 49, 49, 0.3);
+  @media (max-width: 650px) {
+    min-width: 340px;
+  }
 `;
 
 const Title = styled.h2`
