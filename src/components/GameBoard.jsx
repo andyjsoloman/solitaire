@@ -14,28 +14,49 @@ const BoardWrapper = styled.div`
     width: 100%;
     padding: 1rem;
   }
+
+  @media (max-width: 650px) {
+    width: 100%;
+    padding: 0;
+  }
 `;
 
 const TopRow = styled.div`
   display: flex;
   justify-content: end;
   gap: 2rem;
+
+  @media (max-width: 650px) {
+    gap: 0.5rem;
+  }
 `;
 
 const LeftGroup = styled.div`
   display: flex;
   gap: 2rem;
+
+  @media (max-width: 650px) {
+    gap: 0.5rem;
+  }
 `;
 
 const RightGroup = styled.div`
   display: flex;
   gap: 2rem;
+
+  @media (max-width: 650px) {
+    gap: 0.5rem;
+  }
 `;
 
 const BottomRow = styled.div`
   display: flex;
   justify-content: end;
   gap: 2rem;
+
+  @media (max-width: 650px) {
+    gap: 0.5rem;
+  }
 `;
 
 function GameBoard({

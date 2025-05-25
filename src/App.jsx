@@ -57,7 +57,7 @@ const MainDiv = styled.div`
   margin: 20px 60px;
   gap: 2rem;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1300px) {
     flex-direction: column-reverse;
     align-items: center;
     margin: 20px;

@@ -25,7 +25,7 @@ const CardWrapper = styled.div.attrs({})`
   }
 
   @media (max-width: 480px) {
-    --card-offset: 50px;
+    --card-offset: 40px;
   }
   z-index: ${({ $index }) => $index + 1};
   cursor: ${({ $isDraggable }) => ($isDraggable ? "grab" : "default")};
@@ -39,8 +39,8 @@ const CardWrapper = styled.div.attrs({})`
   }
 
   @media (max-width: 480px) {
-    width: 50px;
-    height: 75px;
+    width: 40px;
+    height: 60px;
     font-size: 16px;
   }
 `;
@@ -58,6 +58,14 @@ const FaceDownOverlay = styled.div`
 const CardBackIcon = styled.img`
   width: 40px;
   height: auto;
+
+  @media (max-width: 768px) {
+    width: 30px;
+  }
+
+  @media (max-width: 480px) {
+    width: 20px;
+  }
 `;
 
 function getCardImageFilename(suit, rank) {

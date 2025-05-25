@@ -16,8 +16,8 @@ const BasePileWrapper = styled.div`
   }
 
   @media (max-width: 480px) {
-    width: 50px;
-    min-height: 75px;
+    width: 40px;
+    min-height: 60px;
   }
 `;
 
