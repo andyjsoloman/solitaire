@@ -36,12 +36,14 @@ const CardWrapper = styled.div.attrs({})`
     width: 60px;
     height: 90px;
     font-size: 20px;
+    border-radius: 6px;
   }
 
   @media (max-width: 480px) {
     width: 40px;
     height: 60px;
     font-size: 16px;
+    border-radius: 4px;
   }
 `;
 

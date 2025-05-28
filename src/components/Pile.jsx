@@ -13,11 +13,13 @@ const BasePileWrapper = styled.div`
   @media (max-width: 768px) {
     width: 60px;
     min-height: 90px;
+    border-radius: 6px;
   }
 
   @media (max-width: 480px) {
     width: 40px;
     min-height: 60px;
+    border-radius: 4px;
   }
 `;
 
