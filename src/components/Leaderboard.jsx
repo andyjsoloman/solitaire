@@ -57,7 +57,7 @@ const ListItem = styled.li`
   }
 `;
 
-export default function Leaderboard() {
+export default function Leaderboard({ refreshTrigger }) {
   const [scores, setScores] = useState([]);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function Leaderboard() {
       if (!error) setScores(data);
     }
     fetchScores();
-  }, []);
+  }, [refreshTrigger]);
 
   return (
     <Wrapper>

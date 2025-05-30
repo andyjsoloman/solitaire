@@ -65,6 +65,10 @@ export function handleDropCard(draggedCard, destColKey, prev, setIsGameWon) {
   const newTableau = prev.tableau.map((col) => [...col]);
   const newFoundations = { ...prev.foundations };
 
+  if (draggedCard.sourceCol === "waste" && destColKey === "waste") {
+    return prev; // no state change needed
+  }
+
   const isFoundation = ["hearts", "diamonds", "clubs", "spades"].includes(
     destColKey
   );

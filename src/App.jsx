@@ -84,6 +84,8 @@ function App() {
   const [showWinModal, setShowWinModal] = useState(false);
   const [finalTime, setFinalTime] = useState(null);
   const [activeCard, setActiveCard] = useState(null);
+  const [refreshLeaderboard, setRefreshLeaderboard] = useState(false);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5 },
@@ -126,6 +128,7 @@ function App() {
 
     setShowWinModal(false);
     setPlayerName("");
+    resetGame();
   }
 
   function resetGame() {
@@ -134,6 +137,7 @@ function App() {
     setStartTime(Date.now());
     setElapsedTime(0);
     setFinalTime(null);
+    setRefreshLeaderboard((prev) => !prev);
   }
 
   function handleDragStart(event) {
@@ -180,7 +184,7 @@ function App() {
       </TimerWrapper>
 
       <MainDiv>
-        <Leaderboard />
+        <Leaderboard refreshTrigger={refreshLeaderboard} />
         <GameBoard
           tableau={gameState.tableau}
           stock={gameState.stock}
