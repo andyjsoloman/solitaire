@@ -44,6 +44,9 @@ const HeaderDiv = styled.div`
     padding: 20px 10px;
     margin-top: 80px;
   }
+  @media (max-width: 768px) {
+    margin-top: 32px;
+  }
 `;
 const TimerWrapper = styled.div`
   display: flex;
