@@ -25,6 +25,14 @@ import { CRTText } from "./components/CRTText";
 import CRTModeToggle from "./components/CRTModeToggle";
 import VictoryEmitter from "./components/VictoryEmitter";
 import { getCanDrop as canDropRule, handleDropCard } from "./utils/rules";
+import Button from "./components/Button";
+
+const NavDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+`;
 
 const HeaderDiv = styled.div`
   display: flex;
@@ -171,13 +179,18 @@ function App() {
       onDragEnd={handleDragEnd}
       collisionDetection={closestCenter}
     >
-      <CRTModeToggle />
+      <NavDiv>
+        <Button>Continue to Site</Button>
+        <CRTModeToggle />
+      </NavDiv>
+
       <HeaderDiv>
         <h1>SOLITAIRE</h1>
       </HeaderDiv>
+
       <TimerWrapper>
         <TimerDiv>
-          <button onClick={resetGame}>🔄 Restart Game</button>
+          <Button onClick={resetGame}>Restart Game</Button>
           {isGameWon && <h2>🎉 You win! 🎉</h2>}
           {!isGameWon && <p>⏱ Time: {formatTime(elapsedTime, true)}</p>}
         </TimerDiv>
