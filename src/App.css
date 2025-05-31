@@ -24,3 +24,11 @@
 }
 
 /* hsl(150, 91%, 17%) */
+
+.dot {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  border-radius: 20px;
+  z-index: 2;
+}
