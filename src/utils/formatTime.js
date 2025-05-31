@@ -6,7 +6,7 @@ export function formatTime(seconds, blink = false) {
   const colon = blink
     ? Math.floor(Date.now() / 500) % 2 === 0
       ? ":"
-      : " "
+      : "\u00A0" // non-breaking space (invisible, but same width)
     : ":";
 
   const h = hrs > 0 ? `${hrs.toString().padStart(2, "0")}${colon}` : "";

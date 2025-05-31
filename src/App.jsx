@@ -97,6 +97,9 @@ function App() {
   const [isGameWon, setIsGameWon] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [tick, setTick] = useState(0);
+
   const [playerName, setPlayerName] = useState("");
   const [showWinModal, setShowWinModal] = useState(false);
   const [finalTime, setFinalTime] = useState(null);
@@ -112,6 +115,13 @@ function App() {
     }),
     useSensor(KeyboardSensor)
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick((t) => t + 1);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (isGameWon) return;
