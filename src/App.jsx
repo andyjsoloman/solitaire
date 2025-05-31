@@ -78,6 +78,15 @@ const MainDiv = styled.div`
   }
 `;
 
+const Timer = styled.div`
+  font-family: "Orbitron", sans-serif;
+  color: #66ff99;
+  font-size: 1.5rem;
+  text-align: end;
+  padding-top: 4px;
+  padding-bottom: 4px;
+`;
+
 function getInitialGameState() {
   const deck = shuffleDeck(generateDeck());
   return dealCards(deck);
@@ -192,7 +201,7 @@ function App() {
         <TimerDiv>
           <Button onClick={resetGame}>Restart Game</Button>
           {isGameWon && <h2>🎉 You win! 🎉</h2>}
-          {!isGameWon && <p>⏱ Time: {formatTime(elapsedTime, true)}</p>}
+          {!isGameWon && <Timer> {formatTime(elapsedTime, true)}</Timer>}
         </TimerDiv>
       </TimerWrapper>
 
