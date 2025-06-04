@@ -239,9 +239,7 @@ function App() {
         {isGameWon && <VictoryEmitter foundations={gameState.foundations} />}
         {showWinModal && (
           <Modal>
-            <h3 style={{ color: "black" }}>
-              🎉 You win! Enter a Name for the Leaderboard
-            </h3>
+            <h3>🎉 You win! Enter a Name for the Leaderboard</h3>
             <input
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}

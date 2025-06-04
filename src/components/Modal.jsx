@@ -14,12 +14,19 @@ const modalOverlayStyle = {
 };
 
 const modalStyle = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
   backgroundColor: "white",
   padding: "2rem",
   borderRadius: "8px",
   maxWidth: "400px",
   width: "90%",
   boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+  color: "#333",
+  textAlign: "center",
+  gap: "1rem",
 };
 
 export default function Modal({ children }) {
