@@ -19,6 +19,10 @@ const BoardWrapper = styled.div`
     width: 100%;
     padding: 0;
   }
+
+  @media (max-width: 370px) {
+    margin-right: -20px;
+  }
 `;
 
 const TopRow = styled.div`
@@ -27,7 +31,10 @@ const TopRow = styled.div`
   gap: 2rem;
 
   @media (max-width: 650px) {
-    gap: 0.75rem;
+    gap: 0.625rem;
+  }
+  @media (max-width: 360px) {
+    gap: 0.4rem;
   }
 `;
 
@@ -36,7 +43,10 @@ const LeftGroup = styled.div`
   gap: 2rem;
 
   @media (max-width: 650px) {
-    gap: 0.75rem;
+    gap: 0.625rem;
+  }
+  @media (max-width: 360px) {
+    gap: 0.4rem;
   }
 `;
 
@@ -45,7 +55,10 @@ const RightGroup = styled.div`
   gap: 2rem;
 
   @media (max-width: 650px) {
-    gap: 0.75rem;
+    gap: 0.625rem;
+  }
+  @media (max-width: 360px) {
+    gap: 0.4rem;
   }
 `;
 
@@ -55,7 +68,10 @@ const BottomRow = styled.div`
   gap: 2rem;
 
   @media (max-width: 650px) {
-    gap: 0.75rem;
+    gap: 0.625rem;
+  }
+  @media (max-width: 360px) {
+    gap: 0.4rem;
   }
 `;
 

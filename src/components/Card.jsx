@@ -45,6 +45,12 @@ const CardWrapper = styled.div.attrs({})`
     font-size: 16px;
     border-radius: 4px;
   }
+  @media (max-width: 330px) {
+    width: 35px;
+    height: 55px;
+    font-size: 16px;
+    border-radius: 2px;
+  }
 `;
 
 const FaceDownOverlay = styled.div`

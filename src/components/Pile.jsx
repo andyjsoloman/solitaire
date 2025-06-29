@@ -21,6 +21,12 @@ const BasePileWrapper = styled.div`
     min-height: 60px;
     border-radius: 4px;
   }
+  @media (max-width: 330px) {
+    width: 35px;
+    height: 55px;
+
+    border-radius: 2px;
+  }
 `;
 
 // Interactive wrapper with drag-and-drop visual styling

@@ -17,6 +17,9 @@ const Wrapper = styled.div`
   @media (max-width: 650px) {
     min-width: 340px;
   }
+  @media (max-width: 400px) {
+    min-width: 270px;
+  }
 `;
 
 const Title = styled.h2`
