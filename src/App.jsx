@@ -26,6 +26,7 @@ import CRTModeToggle from "./components/CRTModeToggle";
 import VictoryEmitter from "./components/VictoryEmitter";
 import { getCanDrop as canDropRule, handleDropCard } from "./utils/rules";
 import Button from "./components/Button";
+import Header from "./components/Header";
 
 const NavDiv = styled.div`
   display: flex;
@@ -207,7 +208,7 @@ function App() {
       </NavDiv>
 
       <HeaderDiv>
-        <h1>SOLITAIRE</h1>
+        <Header />
       </HeaderDiv>
 
       <TimerWrapper>
