@@ -204,7 +204,7 @@ function App() {
       collisionDetection={closestCenter}
     >
       <NavDiv>
-        <Link href="https://sophiastel.net">Continue to Site</Link>
+        <Link href="https://sophiastel.net/home">Continue to Site</Link>
         <CRTModeToggle />
       </NavDiv>
 
