@@ -73,3 +73,8 @@ h6 {
 #__next {
   isolation: isolate;
 }
+
+h2 {
+  font-family: "Tangerine", cursive;
+  font-size: 4rem;
+}

@@ -20,8 +20,8 @@ const Wrapper = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 2.5rem;
+  font-weight: 900;
   margin-bottom: 1rem;
   text-align: center;
   letter-spacing: 0.5px;

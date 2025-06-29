@@ -26,6 +26,7 @@ import CRTModeToggle from "./components/CRTModeToggle";
 import VictoryEmitter from "./components/VictoryEmitter";
 import { getCanDrop as canDropRule, handleDropCard } from "./utils/rules";
 import Button from "./components/Button";
+import Link from "./components/Link";
 import Header from "./components/Header";
 
 const NavDiv = styled.div`
@@ -39,7 +40,7 @@ const HeaderDiv = styled.div`
   display: flex;
   justify-content: center;
   padding-top: 40px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
 
   @media (max-width: 768px) {
     padding: 20px 10px;
@@ -203,7 +204,7 @@ function App() {
       collisionDetection={closestCenter}
     >
       <NavDiv>
-        <Button>Continue to Site</Button>
+        <Link href="https://sophiastel.net">Continue to Site</Link>
         <CRTModeToggle />
       </NavDiv>
 
